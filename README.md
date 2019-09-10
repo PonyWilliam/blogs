@@ -1,29 +1,29 @@
 # blog
 
-## Project setup
+## 安装项目依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 开发者模式调试项目
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 打包生产环境项目
 ```
 npm run build
 ```
 
-### Run your tests
+### 测试项目
 ```
 npm run test
 ```
 
-### Lints and fixes files
+### Lints 测试
 ```
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 已上线的网站
+See [blogs](http://blogs.qbdp.pub:8088/).
