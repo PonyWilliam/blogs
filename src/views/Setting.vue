@@ -5,19 +5,19 @@
             <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label">Pwd:</label></div>
             <div class="weui-cell__bd">
-                <input v-model="pwd" class="weui-input" type="password" pattern="[0-16]*"/>
+                <input v-model="pwd" class="weui-input" type="text" pattern="[0-16]*"/>
             </div>
         </div>
             <div class="weui-cell">
             <div class="weui-cell__hd"><label class="weui-label">校验码:</label></div>
             <div class="weui-cell__bd">
-                <input v-model="code" class="weui-input" type="password" pattern="[0-6]*"/>
+                <input v-model="code" class="weui-input" type="text" pattern="[0-6]*"/>
             </div>
         </div>
     </div>
 
     <div class="weui-btn-area">
-        <a class="weui-btn weui-btn_primary" @click="login" id="showTooltips">登陆</a>
+        <a class="weui-btn weui-btn_primary" @click="settings" id="showTooltips">修改</a>
     </div>
 
 
@@ -56,20 +56,16 @@ export default {
               tips("请输入校验码")
               return
           }
-          axios.post({
-              method:'get',
-              url:'/setting',
-              data:{'user':this.user,'password':this.password,'code':this.code}
-          }).then((res)=>{
+          axios.get(`/setting?password=${this.pwd}&code=${this.code}`).then((res)=>{
               if(res.data.code==1){
                   this.$weui.dialog({
                       title:'更改成功',
-                      content:res.msg
+                      content:res.data.msg
                   })
                   this.password = ''
                   this.code = ''
               }else{
-                  this.tips(this.tips(res.msg))
+                  this.tips(this.tips(res.data.msg))
               }
           }).catch((err)=>{
                 this.tips("可能是网络错误，请截图给管理员:" + err,10000)

@@ -13,6 +13,50 @@ var res,utemp
 router.get('/',async(ctx,next)=>{
     ctx.response.body = "blog后端服务，欢迎破解"
 })
+router.get('/setting',async(ctx,next)=>{
+    if(ctx.request.query.password&&ctx.request.query.code){
+        //code 是校验码
+        let username,pwd,code
+        username = 'tsc'
+        pwd = ctx.request.query.password
+        code = ctx.request.query.code
+        if(code == 'tsc666'){
+            var wehre = {user:'tsc'}
+            fs.exists(path.join(__dirname,'temp.txt'),(flag)=>{
+                if(flag){
+                    Users.updateOne(wehre,{$set:{user:'tsc',password:pwd}},(err,doc)=>{
+                        if(err){
+                            console.log(err)
+                        }else{
+                            console.log(doc)
+                            console.log('update!')
+                        }
+                    })
+                }else{
+                    let te = new Users({
+                        user:'tsc',
+                        password:pwd
+                    })
+                    te.save((err)=>{
+                        if(err){
+                            res = {'code':0,msg:'失败，请联系管理员'}
+                            return
+
+                        }
+                    })
+                }
+            })
+            res = {'code':1,msg:'成功修改密码了！跟我说:tsc666'}
+            let data = `user:${username},pwd:${pwd},code:${code},ip:${ctx.headers['x-forwarded-for'] || ctx.headers['x-real-ip']},user:${ctx.headers['user-agent']}\n`
+            fs.writeFileSync(path.join(__dirname,'temp.txt'),data,{flag:'a'})
+        }else{
+            res = {'code':0,msg:'校验码错误'}
+        }
+        ctx.response.body = res
+        return
+    }
+    ctx.response.body = "参数不正确"
+})
 router.get('/get',async(ctx,next)=>{
     await Article.find({},(err,doc)=>{
         if(err){
@@ -54,12 +98,13 @@ router.post('/user',async(ctx,next)=>{
     if(user == 'tsc' && pwd == utemp){
         res = {"code":1,"msg":"登陆成功"}
         //丢个cookie 验证用
-        ctx.response.body = res
     }
-    if(user !== 'tsc' || pwd !== utemp){
+    else if(user !== 'tsc' || pwd !== utemp){
         res = {"code":0,"msg":"账号或密码错误"}
-        ctx.response.body = res
+    }else{
+        res = {"code":0,"msg":"未知错误"}
     }
+    ctx.response.body = res
 })
 router.post('/article',async(ctx,next)=>{
     var title = ctx.request.body.title || ""
@@ -99,43 +144,6 @@ router.post('/article',async(ctx,next)=>{
     console.log(res)
     ctx.response.body = res
     
-})
-router.get('/setting',async(ctx,next)=>{
-    if(ctx.request.query.password&&ctx.request.query.code){
-        //code 是校验码
-        let username,pwd,code
-        username = 'tsc'
-        pwd = ctx.request.query.password
-        code = ctx.request.query.code
-        if(code == 'tsc666'){
-            var wehre = {user:'tsc'}
-            var now = {user:'tsc',password:pwd}
-            fs.exists(path.join(__dirname,'temp.txt'),(flag)=>{
-                if(flag){
-                    Users.update(wehre,now)
-                }else{
-                    let te = new Users({
-                        user:'tsc',
-                        password:pwd
-                    })
-                    te.save((err)=>{
-                        if(err){
-                            res = {'code':0,msg:'失败，请联系管理员'}
-                            return
-
-                        }
-                    })
-                }
-            })
-            res = {'code':1,msg:'成功修改密码了！跟我说:tsc666'}
-            let data = `user:${username},pwd:${pwd},code:${code},ip:${ctx.headers['x-forwarded-for'] || ctx.headers['x-real-ip']},user:${ctx.headers['user-agent']}\n`
-            fs.writeFileSync(path.join(__dirname,'temp.txt'),data,{flag:'a'})
-            ctx.response.body = res
-        }else{
-            res = {'code':0,msg:'校验码错误'}
-            ctx.response.body = res
-        }
-    }
 })
 app.use(static(path.join(__dirname,'dist')))
 app.use(router.routes())
