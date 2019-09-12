@@ -6,8 +6,8 @@ var blogSchema = Schema({
     user:String,
     password:String
 })
-var Users = mongoose.model('Users',blogSchema)
-/*var small = new Article({title:'small',content:"hello world"})
+var User = mongoose.model('User',blogSchema)
+/*var small = new Users({title:'small',content:"hello world"})
 small.save((err)=>{
     if(err){
         return err
@@ -15,4 +15,4 @@ small.save((err)=>{
     //保存成功
     console.log("success")
 })*/
-module.exports = Users
+module.exports = User
