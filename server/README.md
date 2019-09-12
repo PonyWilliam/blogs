@@ -26,4 +26,7 @@ npm run lint
 ```
 
 ### 已上线的网站
-See [blogs](http://blogs.qbdp.pub:8088/).
+See [blog](http://blog.hl-5.com).
+
+### 关于其它问题
+本项目可以用于商用，但请不要用于非法项目。字体问题请自行解决。服务端所需框架未列入到package中，请自行安装。
